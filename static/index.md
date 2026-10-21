@@ -27,6 +27,19 @@ Website: [NG3D-Druck.de](https://ng3d-druck.de)
 
 You can use the button below to install the pre-built firmware directly to your device via USB from the browser.
 
+1. **Start the device in flash mode:** press and hold the **BOOT** button, plug in the USB-C cable,
+   then release the button. This is only needed for the first installation.
+2. Click **Install**, select the serial port of the device (e.g. "USB JTAG/serial debug unit") and confirm.
+   Wait until the installation has finished.
+3. **Restart the device normally:** unplug the USB-C cable and plug it back in, this time *without* pressing **BOOT**.
+4. **Set up Wi-Fi:** click **Install** again and select the port. The installer detects the firmware and offers
+   **Configure Wi-Fi**, where you enter your Wi-Fi name and password.
+   Alternatively, set up Wi-Fi via Bluetooth with the Home Assistant app, or connect to the hotspot
+   `gas-connect-xxxxxx` and open `http://192.168.4.1`.
+5. **Add it to Home Assistant:** the device is discovered automatically under
+   *Settings → Devices & services*. Set **Pulse volume** if needed, then **Set meter reading**
+   to the current value of your meter.
+
 </div>
 
 <div data-lang="de" markdown="1">
@@ -40,6 +53,18 @@ Webseite: [NG3D-Druck.de](https://ng3d-druck.de)
 # Installation
 
 Mit dem Button unten kannst du die fertige Firmware direkt aus dem Browser per USB auf dein Gerät installieren.
+
+1. **Gerät im Flash-Modus starten:** die **BOOT**-Taste gedrückt halten, das USB-C-Kabel einstecken
+   und die Taste dann loslassen. Das ist nur bei der ersten Installation nötig.
+2. Auf **Installieren** klicken, den seriellen Port des Geräts auswählen (z. B. „USB JTAG/serial debug unit“)
+   und bestätigen. Warten, bis die Installation abgeschlossen ist.
+3. **Gerät normal neu starten:** das USB-C-Kabel abziehen und wieder einstecken, diesmal *ohne* **BOOT** zu drücken.
+4. **WLAN einrichten:** erneut auf **Installieren** klicken und den Port auswählen. Der Installer erkennt die Firmware
+   und bietet **Configure Wi-Fi** an, dort WLAN-Name und Passwort eingeben.
+   Alternativ das WLAN per Bluetooth mit der Home-Assistant-App einrichten oder mit dem Hotspot
+   `gas-connect-xxxxxx` verbinden und `http://192.168.4.1` öffnen.
+5. **In Home Assistant hinzufügen:** Das Gerät wird unter *Einstellungen → Geräte & Dienste* automatisch gefunden.
+   Bei Bedarf **Pulse volume** anpassen und dann bei **Set meter reading** den aktuellen Zählerstand eintragen.
 
 </div>
 
