@@ -5,7 +5,7 @@
 ## Deutsch
 
 ESPHome-Firmware für den **Gas Connect** von [NG3D-Druck](https://ng3d-druck.de):
-ein Reedkontakt-Impulssensor für BK-Gaszähler mit eingebautem Waveshare ESP32-C3-Zero.
+ein Impulssensor für Gaszähler mit Reedkontakt, mit eingebautem Waveshare ESP32-C3-Zero.
 
 ### Hardware
 
@@ -15,7 +15,7 @@ ein Reedkontakt-Impulssensor für BK-Gaszähler mit eingebautem Waveshare ESP32-
 | GPIO10 | WS2812-RGB-LED auf der Platine    |
 
 Jede Umdrehung der letzten Rollenziffer erzeugt einen Impuls. Wie viel Gas das ist, steht auf dem Typenschild des Zählers
-(bei den meisten BK-Zählern 0,01 m³) und wird über **Pulse volume** eingestellt.
+(bei den meisten Gaszählern 0,01 m³) und wird über **Pulse volume** eingestellt.
 
 ### Entitäten
 
@@ -62,7 +62,7 @@ Home Assistant (ab Version 2026.3). Bis Home Assistant verbunden ist, oder bei �
 ## English
 
 ESPHome firmware for the **Gas Connect** by [NG3D-Druck](https://ng3d-druck.de):
-a reed contact pulse sensor for BK gas meters with a built-in Waveshare ESP32-C3-Zero.
+a pulse sensor for gas meters with a reed contact, with a built-in Waveshare ESP32-C3-Zero.
 
 ### Hardware
 
@@ -72,7 +72,7 @@ a reed contact pulse sensor for BK gas meters with a built-in Waveshare ESP32-C3
 | GPIO10 | Onboard WS2812 RGB LED            |
 
 Each revolution of the last drum digit creates one pulse. How much gas that is is printed on the meter
-(0.01 m³ for most BK meters) and is set via **Pulse volume**.
+(0.01 m³ for most gas meters) and is set via **Pulse volume**.
 
 ### Entities
 

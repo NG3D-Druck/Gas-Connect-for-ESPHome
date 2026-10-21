@@ -356,7 +356,7 @@ number:
 
 select:
   # Volume per pulse of the gas meter (last drum digit, one revolution);
-  # 0.01 m³ for most BK meters, see the label on the meter
+  # 0.01 m³ for most gas meters, see the label on the meter
   - platform: template
     id: gas_pulse_volume_select
     name: Pulse volume
