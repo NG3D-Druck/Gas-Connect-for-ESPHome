@@ -4,8 +4,12 @@
 
 ## Deutsch
 
-ESPHome-Firmware für den **Gas Connect** von [NG3D-Druck](https://ng3d-druck.de):
-ein Impulssensor für Gaszähler mit Reedkontakt, mit eingebautem Waveshare ESP32-C3-Zero.
+ESPHome-Firmware für den **Gas Connect for ESPHome** von [NG3D-Druck](https://ng3d-druck.de): einen Impulssensor für Gaszähler
+mit Reedkontakt, mit eingebautem Waveshare ESP32-C3-Zero. Es gibt ihn in zwei Varianten, die sich nur in der Halterung
+für den Zähler unterscheiden und dieselbe Firmware nutzen:
+
+- **Gas Connect BK for ESPHome** – passend z. B. für Elster/Honeywell BK-G2,5–G25
+- **Gas Connect PF for ESPHome** – passend z. B. für RS/2001, RS/2.0, RST/2.0 und RS2,4 (G1,6–G10) von Pietro Fiorentini, Ernst Heitland und Samgas
 
 ### Hardware
 
@@ -61,8 +65,12 @@ Home Assistant (ab Version 2026.3). Bis Home Assistant verbunden ist, oder bei �
 
 ## English
 
-ESPHome firmware for the **Gas Connect** by [NG3D-Druck](https://ng3d-druck.de):
-a pulse sensor for gas meters with a reed contact, with a built-in Waveshare ESP32-C3-Zero.
+ESPHome firmware for the **Gas Connect for ESPHome** by [NG3D-Druck](https://ng3d-druck.de): a pulse sensor for gas meters
+with a reed contact, with a built-in Waveshare ESP32-C3-Zero. It comes in two variants that only differ in the mount
+for the meter and share the same firmware:
+
+- **Gas Connect BK for ESPHome** – fits e.g. Elster/Honeywell BK-G2.5–G25
+- **Gas Connect PF for ESPHome** – fits e.g. RS/2001, RS/2.0, RST/2.0 and RS2,4 (G1.6–G10) by Pietro Fiorentini, Ernst Heitland and Samgas
 
 ### Hardware
 
