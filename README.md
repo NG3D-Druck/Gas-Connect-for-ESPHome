@@ -4,7 +4,7 @@
 
 ## Deutsch
 
-ESPHome-Firmware für den **Gas Connect** von [NG3D](https://ng3d-druck.de):
+ESPHome-Firmware für den **Gas Connect** von [NG3D-Druck](https://ng3d-druck.de):
 ein Reedkontakt-Impulssensor für BK-Gaszähler mit eingebautem Waveshare ESP32-C3-Zero.
 
 ### Hardware
@@ -49,7 +49,7 @@ Home Assistant (ab Version 2026.3). Bis Home Assistant verbunden ist, oder bei �
 
 ## English
 
-ESPHome firmware for the **Gas Connect** by [NG3D](https://ng3d-druck.de):
+ESPHome firmware for the **Gas Connect** by [NG3D-Druck](https://ng3d-druck.de):
 a reed contact pulse sensor for BK gas meters with a built-in Waveshare ESP32-C3-Zero.
 
 ### Hardware
