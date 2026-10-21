@@ -19,7 +19,7 @@
 
 # About
 
-ESP Gas Connect BK is a reed contact pulse sensor for BK gas meters (Elster/Honeywell BK-G2.5 to BK-G25,
+Gas Connect for ESPHome is a reed contact pulse sensor for BK gas meters (Elster/Honeywell BK-G2.5 to BK-G25,
 Pipersberg and compatible) with a built-in Waveshare ESP32-C3-Zero. It ships with ESPHome pre-installed.
 
 Product page: [ng3d-druck.de](https://ng3d-druck.de/products/reedkontakt-sensor-bk-gaszaehler-esp32)
@@ -34,7 +34,7 @@ You can use the button below to install the pre-built firmware directly to your 
 
 # Über
 
-ESP Gas Connect BK ist ein Reedkontakt-Impulssensor für BK-Gaszähler (Elster/Honeywell BK-G2.5 bis BK-G25,
+Gas Connect for ESPHome ist ein Reedkontakt-Impulssensor für BK-Gaszähler (Elster/Honeywell BK-G2.5 bis BK-G25,
 Pipersberg und kompatible) mit eingebautem Waveshare ESP32-C3-Zero. ESPHome ist bereits vorinstalliert.
 
 Produktseite: [ng3d-druck.de](https://ng3d-druck.de/products/reedkontakt-sensor-bk-gaszaehler-esp32)
@@ -45,7 +45,7 @@ Mit dem Button unten kannst du die fertige Firmware direkt aus dem Browser per U
 
 </div>
 
-<esp-web-install-button manifest="firmware/esp-gas-connect-bk.manifest.json">
+<esp-web-install-button manifest="firmware/gas-connect.manifest.json">
   <button slot="activate">
     <span data-lang="en">Install</span><span data-lang="de">Installieren</span>
   </button>

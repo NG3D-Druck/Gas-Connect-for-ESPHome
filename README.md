@@ -1,6 +1,6 @@
-# ESP Gas Connect BK
+# Gas Connect for ESPHome
 
-ESPHome firmware for the **ESP Gas Connect BK** by [NG3D](https://ng3d-druck.de/products/reedkontakt-sensor-bk-gaszaehler-esp32):
+ESPHome firmware for the **Gas Connect for ESPHome** by [NG3D](https://ng3d-druck.de/products/reedkontakt-sensor-bk-gaszaehler-esp32):
 a reed contact pulse sensor for BK gas meters with a built-in Waveshare ESP32-C3-Zero.
 
 ## Hardware
@@ -58,5 +58,5 @@ just rename the entities in Home Assistant instead.
 
 ## Files
 
-- `esp-gas-connect-bk.yaml` - the configuration you get when taking control in the ESPHome Device Builder
-- `esp-gas-connect-bk.factory.yaml` - the factory firmware (adds Improv, project info and OTA updates)
+- `gas-connect.yaml` - the configuration you get when taking control in the ESPHome Device Builder
+- `gas-connect.factory.yaml` - the factory firmware (adds Improv, project info and OTA updates)

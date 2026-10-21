@@ -1,19 +1,19 @@
 packages:
   # Include all of the core configuration
-  core: !include esp-gas-connect-bk.yaml
+  core: !include gas-connect.yaml
 
 esphome:
   # This will allow for project identification,
   # configuration and updates.
   project:
-    name: ng3d.esp-gas-connect-bk
+    name: ng3d.gas-connect
     version: dev  # This will be replaced by the github workflows with the `release` version
 
 # This should point to the public location of the yaml file that will be adopted.
 # In this case it is the core yaml file that does not contain the extra things
 # that are provided by this factory yaml file as the user does not need these once adopted.
 dashboard_import:
-  package_import_url: github://NG3D-Druck/Gas-Connect-for-ESPHome/esp-gas-connect-bk.yaml@main
+  package_import_url: github://NG3D-Druck/Gas-Connect-for-ESPHome/gas-connect.yaml@main
 
 # Sets up Bluetooth LE to allow the user
 # to provision wifi credentials to the device.
@@ -34,4 +34,4 @@ update:
   - platform: http_request
     id: update_http_request
     name: ${name_firmware}
-    source: https://ng3d-druck.github.io/Gas-Connect-for-ESPHome/firmware/esp-gas-connect-bk.manifest.json
+    source: https://ng3d-druck.github.io/Gas-Connect-for-ESPHome/firmware/gas-connect.manifest.json

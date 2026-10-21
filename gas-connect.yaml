@@ -1,6 +1,6 @@
 substitutions:
-  name: esp-gas-connect-bk
-  friendly_name: ESP Gas Connect BK
+  name: gas-connect
+  friendly_name: Gas Connect for ESPHome
   # Volume per pulse of the BK gas meter (last drum digit, one revolution = 0.01 m³)
   pulse_volume: "0.01"
   # Used for the daily/monthly/yearly consumption rollover at local midnight
