@@ -33,5 +33,5 @@ ota:
 update:
   - platform: http_request
     id: update_http_request
-    name: ${name_firmware}
+    name: Firmware
     source: https://ng3d-druck.github.io/Gas-Connect-for-ESPHome/firmware/gas-connect.manifest.json

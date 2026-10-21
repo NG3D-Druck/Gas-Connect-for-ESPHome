@@ -1,62 +1,93 @@
 # Gas Connect for ESPHome
 
-ESPHome firmware for the **Gas Connect for ESPHome** by [NG3D](https://ng3d-druck.de/products/reedkontakt-sensor-bk-gaszaehler-esp32):
+[Deutsch](#deutsch) | [English](#english)
+
+## Deutsch
+
+ESPHome-Firmware für den **Gas Connect** von [NG3D](https://ng3d-druck.de):
+ein Reedkontakt-Impulssensor für BK-Gaszähler mit eingebautem Waveshare ESP32-C3-Zero.
+
+### Hardware
+
+| Pin    | Funktion                          |
+| ------ | --------------------------------- |
+| GPIO4  | Reedkontakt (gegen GND, Pull-up)  |
+| GPIO10 | WS2812-RGB-LED auf der Platine    |
+
+Jede Umdrehung der letzten Rollenziffer erzeugt einen Impuls. Wie viel Gas das ist, steht auf dem Typenschild des Zählers
+(bei den meisten BK-Zählern 0,01 m³) und wird über **Pulse volume** eingestellt.
+
+### Entitäten
+
+- **Gas meter reading** (Zählerstand, m³, `total_increasing`, Geräteklasse `gas`) - für das Energie-Dashboard von Home Assistant
+- **Gas flow** (Durchfluss, m³/h)
+- **Gas today**, **Gas this month**, **Gas this year** (m³) - Verbrauch seit Mitternacht (Ortszeit) / dem 1. des Monats / dem 1. Januar
+- **Gas yesterday** (m³) - Verbrauch des Vortags (unbekannt, wenn das Gerät einen ganzen Tag aus war)
+- **Set meter reading** - einmal den Stand vom Zähler eintragen, er bleibt über Neustarts erhalten
+- **Pulse volume** - Volumen pro Impuls (0,001 / 0,01 / 0,1 / 1 m³, Standard 0,01 m³); beim Umstellen bleiben Zählerstand und Verbrauch erhalten
+- **Reed contact** (Diagnose) - aktueller Zustand des Kontakts, hilfreich beim Ausrichten des Sensors
+- **LED**, **Restart**, **WiFi signal**, **Uptime**
+- **Firmware**-Update (nur in der Werks-Firmware, entfällt nach der Übernahme im ESPHome Device Builder)
+
+### Einrichtung
+
+1. Das Gerät über USB-C mit Strom versorgen.
+2. Mit dem WLAN verbinden: per Improv über Bluetooth (Home Assistant / ESPHome-App),
+   per Improv über USB im [Web-Installer](https://ng3d-druck.github.io/Gas-Connect-for-ESPHome/) oder über den Fallback-Hotspot.
+3. In Home Assistant übernehmen (es erscheint als `gas-connect-xxxxxx`, die Endung sind die letzten Stellen der MAC-Adresse)
+   und bei **Set meter reading** den aktuellen Stand des Zählers eintragen.
+   Falls dein Zähler nicht 0,01 m³ pro Umdrehung hat, vorher **Pulse volume** anpassen.
+
+Die Zeiträume wechseln um Mitternacht Ortszeit. Die Zeitzone übernimmt das Gerät automatisch aus den Einstellungen von
+Home Assistant (ab Version 2026.3). Bis Home Assistant verbunden ist, oder bei älteren Versionen, gilt `Europe/Berlin`
+(Substitution `timezone`).
+
+### Dateien
+
+- `gas-connect.yaml` - die Konfiguration, die man bei der Übernahme im ESPHome Device Builder erhält
+- `gas-connect.factory.yaml` - die Werks-Firmware (ergänzt Improv, Projektinfos und OTA-Updates)
+
+## English
+
+ESPHome firmware for the **Gas Connect** by [NG3D](https://ng3d-druck.de):
 a reed contact pulse sensor for BK gas meters with a built-in Waveshare ESP32-C3-Zero.
 
-## Hardware
+### Hardware
 
 | Pin    | Function                          |
 | ------ | --------------------------------- |
 | GPIO4  | Reed contact (to GND, pull-up)    |
 | GPIO10 | Onboard WS2812 RGB LED            |
 
-One revolution of the last drum digit of a BK meter equals 0.01 m³, so each pulse counts 0.01 m³.
+Each revolution of the last drum digit creates one pulse. How much gas that is is printed on the meter
+(0.01 m³ for most BK meters) and is set via **Pulse volume**.
 
-## Entities
+### Entities
 
 - **Gas meter reading** (m³, `total_increasing`, device class `gas`) - for the Home Assistant energy dashboard
 - **Gas flow** (m³/h)
 - **Gas today**, **Gas this month**, **Gas this year** (m³) - consumption since local midnight / the 1st of the month / January 1st
 - **Gas yesterday** (m³) - consumption of the previous day (unknown if the device was off for a whole day)
 - **Set meter reading** - enter the value shown on your meter once, it is persisted across reboots
+- **Pulse volume** - volume per pulse (0.001 / 0.01 / 0.1 / 1 m³, default 0.01 m³); changing it keeps the meter reading and consumption
 - **Reed contact** (diagnostic) - live contact state, useful when aligning the sensor
-- **LED**, **Restart**, **WiFi signal**, **Uptime**, **Firmware** update
+- **LED**, **Restart**, **WiFi signal**, **Uptime**
+- **Firmware** update (factory firmware only, gone after taking control in the ESPHome Device Builder)
 
-## Setup
+### Setup
 
 1. Power the device via USB-C.
 2. Connect it to your Wi-Fi with Improv via Bluetooth (Home Assistant / ESPHome app),
    Improv via USB at the [web installer](https://ng3d-druck.github.io/Gas-Connect-for-ESPHome/), or the fallback hotspot.
-3. Adopt it in Home Assistant and set **Set meter reading** to the current value of your meter.
+3. Adopt it in Home Assistant (it shows up as `gas-connect-xxxxxx`, the suffix being the end of its MAC address)
+   and set **Set meter reading** to the current value of your meter.
+   If your meter does not count 0.01 m³ per revolution, set **Pulse volume** first.
 
-The periods roll over at local midnight, using SNTP and the `timezone` substitution (default `Europe/Berlin`).
+The periods roll over at local midnight. The device takes the timezone from the Home Assistant settings automatically
+(Home Assistant 2026.3 and newer). Until Home Assistant is connected, or with older versions, `Europe/Berlin` applies
+(`timezone` substitution).
 
-## German entity names
-
-ESPHome compiles entity names into the firmware, so they can't be switched at runtime. To use German names,
-take control of the device in the ESPHome Device Builder and add this to your config:
-
-```yaml
-substitutions:
-  name_gas_flow: Gasdurchfluss
-  name_gas_meter_reading: Gaszählerstand
-  name_gas_today: Gas heute
-  name_gas_yesterday: Gas gestern
-  name_gas_this_month: Gas diesen Monat
-  name_gas_this_year: Gas dieses Jahr
-  name_set_meter_reading: Zählerstand setzen
-  name_reed_contact: Reedkontakt
-  name_wifi_signal: WLAN-Signal
-  name_uptime: Laufzeit
-  name_led: LED
-  name_restart: Neustart
-```
-
-Renaming changes the entity IDs, so Home Assistant creates new entities and the history of the old ones
-(including the energy dashboard) is not carried over. Rename before setting up the energy dashboard, or
-just rename the entities in Home Assistant instead.
-
-## Files
+### Files
 
 - `gas-connect.yaml` - the configuration you get when taking control in the ESPHome Device Builder
 - `gas-connect.factory.yaml` - the factory firmware (adds Improv, project info and OTA updates)

@@ -22,7 +22,7 @@
 Gas Connect for ESPHome is a reed contact pulse sensor for BK gas meters (Elster/Honeywell BK-G2.5 to BK-G25,
 Pipersberg and compatible) with a built-in Waveshare ESP32-C3-Zero. It ships with ESPHome pre-installed.
 
-Product page: [ng3d-druck.de](https://ng3d-druck.de/products/reedkontakt-sensor-bk-gaszaehler-esp32)
+Website: [NG3D-Druck.de](https://ng3d-druck.de)
 
 # Installation
 
@@ -37,7 +37,7 @@ You can use the button below to install the pre-built firmware directly to your 
 Gas Connect for ESPHome ist ein Reedkontakt-Impulssensor für BK-Gaszähler (Elster/Honeywell BK-G2.5 bis BK-G25,
 Pipersberg und kompatible) mit eingebautem Waveshare ESP32-C3-Zero. ESPHome ist bereits vorinstalliert.
 
-Produktseite: [ng3d-druck.de](https://ng3d-druck.de/products/reedkontakt-sensor-bk-gaszaehler-esp32)
+Webseite: [NG3D-Druck.de](https://ng3d-druck.de)
 
 # Installation
 
