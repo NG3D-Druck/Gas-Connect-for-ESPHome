@@ -25,9 +25,21 @@ Jede Umdrehung der letzten Rollenziffer erzeugt einen Impuls. Wie viel Gas das i
 - **Gas yesterday** (m³) - Verbrauch des Vortags (unbekannt, wenn das Gerät einen ganzen Tag aus war)
 - **Set meter reading** - einmal den Stand vom Zähler eintragen, er bleibt über Neustarts erhalten
 - **Pulse volume** - Volumen pro Impuls (0,001 / 0,01 / 0,1 / 1 m³, Standard 0,01 m³); beim Umstellen bleiben Zählerstand und Verbrauch erhalten
+- **Debounce time** - Entprellzeit des Reedkontakts (10-1000 ms, Standard 100 ms); erhöhen, wenn ein Impuls doppelt gezählt wird,
+  verringern, wenn bei hohem Durchfluss Impulse fehlen
 - **Reed contact** (Diagnose) - aktueller Zustand des Kontakts, hilfreich beim Ausrichten des Sensors
-- **LED**, **Restart**, **WiFi signal**, **Uptime**
+- **LED mode** - was die LED anzeigt: **Status + pulse** (Standard), **Status only** oder **Off**
+- **Restart**, **WiFi signal**, **Uptime**
 - **Firmware**-Update (nur in der Werks-Firmware, entfällt nach der Übernahme im ESPHome Device Builder)
+
+### LED
+
+| LED                    | Bedeutung                                         |
+| ---------------------- | ------------------------------------------------- |
+| blau, blinkend         | kein WLAN (Hotspot bzw. Improv aktiv)             |
+| gelb, blinkend         | WLAN verbunden, aber keine Verbindung zu Home Assistant |
+| kurz grün              | Impuls erkannt (nur bei **Status + pulse**)       |
+| aus                    | alles in Ordnung                                  |
 
 ### Einrichtung
 
@@ -70,9 +82,21 @@ Each revolution of the last drum digit creates one pulse. How much gas that is i
 - **Gas yesterday** (m³) - consumption of the previous day (unknown if the device was off for a whole day)
 - **Set meter reading** - enter the value shown on your meter once, it is persisted across reboots
 - **Pulse volume** - volume per pulse (0.001 / 0.01 / 0.1 / 1 m³, default 0.01 m³); changing it keeps the meter reading and consumption
+- **Debounce time** - debounce time of the reed contact (10-1000 ms, default 100 ms); raise it if a pulse is counted twice,
+  lower it if pulses are missed at high flow
 - **Reed contact** (diagnostic) - live contact state, useful when aligning the sensor
-- **LED**, **Restart**, **WiFi signal**, **Uptime**
+- **LED mode** - what the LED shows: **Status + pulse** (default), **Status only** or **Off**
+- **Restart**, **WiFi signal**, **Uptime**
 - **Firmware** update (factory firmware only, gone after taking control in the ESPHome Device Builder)
+
+### LED
+
+| LED                    | Meaning                                           |
+| ---------------------- | ------------------------------------------------- |
+| blue, blinking         | no Wi-Fi (hotspot or Improv active)               |
+| yellow, blinking       | Wi-Fi connected, but no Home Assistant connection |
+| short green flash      | pulse detected (only with **Status + pulse**)     |
+| off                    | all fine                                          |
 
 ### Setup
 

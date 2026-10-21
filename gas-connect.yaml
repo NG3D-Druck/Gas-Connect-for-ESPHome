@@ -17,6 +17,7 @@ esphome:
     then:
       - lambda: |-
           id(gas_pulse_meter).set_total_pulses(id(gas_total_pulses));
+          id(gas_pulse_meter).set_filter_us(id(reed_debounce).state * 1000);
           id(gas_total_restored) = true;
 
 esp32:
@@ -89,6 +90,11 @@ globals:
     type: float
     restore_value: true
     initial_value: "NAN"
+  # True while the LED briefly flashes for a pulse
+  - id: led_flash
+    type: bool
+    restore_value: false
+    initial_value: "false"
 
 time:
   # Without a timezone of its own, this takes over the timezone set in
@@ -108,6 +114,9 @@ interval:
   - interval: 60s
     then:
       - script.execute: gas_period_rollover
+  - interval: 500ms
+    then:
+      - script.execute: led_refresh
 
 script:
   # Starts a new day/month/year once the local date has changed
@@ -141,6 +150,43 @@ script:
             id(gas_year_key) = now.year;
           }
 
+  # Shows the device status on the LED, see the "LED mode" select:
+  # blue blinking = no Wi-Fi, yellow blinking = no Home Assistant connection,
+  # green flash = pulse, off = all fine
+  - id: led_refresh
+    then:
+      - lambda: |-
+          const auto index = id(led_mode_select).active_index();
+          const size_t mode = index.has_value() ? *index : 0;  // 0 = status + pulse, 1 = status only, 2 = off
+          const bool blink_on = (millis() / 1000) % 2 == 0;
+          float r = 0, g = 0, b = 0;
+          if (mode != 2) {
+            if (!wifi::global_wifi_component->is_connected()) {
+              if (blink_on) b = 1;
+            } else if (!api::global_api_server->is_connected()) {
+              if (blink_on) { r = 1; g = 0.5; }
+            } else if (mode == 0 && id(led_flash)) {
+              g = 1;
+            }
+          }
+          // Only touch the light on changes, to keep the log quiet
+          static float last_r = -1, last_g = -1, last_b = -1;
+          if (r == last_r && g == last_g && b == last_b) return;
+          last_r = r;
+          last_g = g;
+          last_b = b;
+          if (r == 0 && g == 0 && b == 0) {
+            auto call = id(onboard_led).turn_off();
+            call.set_transition_length(0);
+            call.perform();
+          } else {
+            auto call = id(onboard_led).turn_on();
+            call.set_rgb(r, g, b);
+            call.set_brightness(0.5);
+            call.set_transition_length(0);
+            call.perform();
+          }
+
 sensor:
   # Reed contact on GPIO4 against GND
   - platform: pulse_meter
@@ -153,6 +199,7 @@ sensor:
         pullup: true
       inverted: true
       allow_other_uses: true
+    # Ignore contact bounces shorter than this; set at runtime by "Debounce time"
     internal_filter: 100ms
     internal_filter_mode: PULSE
     timeout: 10min
@@ -256,9 +303,33 @@ binary_sensor:
     use_interrupt: false
     entity_category: diagnostic
     filters:
-      - delayed_on_off: 50ms
+      - delayed_on_off: !lambda return id(reed_debounce).state;
+    on_press:
+      - lambda: id(led_flash) = true;
+      - script.execute: led_refresh
+      - delay: 200ms
+      - lambda: id(led_flash) = false;
+      - script.execute: led_refresh
 
 number:
+  # Debounce time of the reed contact: a closed or open contact only counts
+  # once it is stable this long. Raise it if a pulse is counted twice.
+  - platform: template
+    id: reed_debounce
+    name: Debounce time
+    icon: mdi:timer-cog-outline
+    entity_category: config
+    unit_of_measurement: ms
+    mode: box
+    min_value: 10
+    max_value: 1000
+    step: 10
+    initial_value: 100
+    optimistic: true
+    restore_value: true
+    on_value:
+      - lambda: id(gas_pulse_meter).set_filter_us(x * 1000);
+
   # Set the current reading shown on the gas meter
   - platform: template
     id: gas_meter_reading_set
@@ -316,16 +387,34 @@ select:
           id(gas_pulse_meter).set_total_pulses(convert(id(gas_total_pulses)));
       - component.update: gas_pulse_volume_select
 
+  # What the LED shows, see the led_refresh script
+  - platform: template
+    id: led_mode_select
+    name: LED mode
+    icon: mdi:led-on
+    entity_category: config
+    options:
+      - "Status + pulse"
+      - "Status only"
+      - "Off"
+    initial_option: "Status + pulse"
+    optimistic: true
+    restore_value: true
+    on_value:
+      - script.execute: led_refresh
+
 light:
-  # Onboard WS2812 RGB LED of the Waveshare ESP32-C3-Zero
+  # Onboard WS2812 RGB LED of the Waveshare ESP32-C3-Zero,
+  # controlled by the led_refresh script only
   - platform: esp32_rmt_led_strip
     id: onboard_led
     name: LED
+    internal: true
     pin: GPIO10
     num_leds: 1
     chipset: WS2812
     channel_colors: RGB
-    entity_category: config
+    restore_mode: ALWAYS_OFF
 
 button:
   - platform: restart
