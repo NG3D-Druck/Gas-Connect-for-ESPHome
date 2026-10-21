@@ -1,0 +1,305 @@
+substitutions:
+  name: esp-gas-connect-bk
+  friendly_name: ESP Gas Connect BK
+  # Volume per pulse of the BK gas meter (last drum digit, one revolution = 0.01 m³)
+  pulse_volume: "0.01"
+  # Used for the daily/monthly/yearly consumption rollover at local midnight
+  timezone: Europe/Berlin
+  # Entity names; override these in your own config to rename them
+  # (German names: see README). Renaming creates new entities in Home Assistant.
+  name_gas_flow: Gas flow
+  name_gas_meter_reading: Gas meter reading
+  name_gas_today: Gas today
+  name_gas_yesterday: Gas yesterday
+  name_gas_this_month: Gas this month
+  name_gas_this_year: Gas this year
+  name_set_meter_reading: Set meter reading
+  name_reed_contact: Reed contact
+  name_wifi_signal: WiFi signal
+  name_uptime: Uptime
+  name_led: LED
+  name_restart: Restart
+  name_firmware: Firmware
+
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+  # Automatically add the mac address to the name
+  # so you can use a single firmware for all devices
+  name_add_mac_suffix: true
+  on_boot:
+    # Run after all components (incl. restored globals) are set up
+    priority: -100
+    then:
+      - lambda: |-
+          id(gas_pulse_meter).set_total_pulses(id(gas_total_pulses));
+          id(gas_total_restored) = true;
+
+esp32:
+  board: esp32-c3-devkitm-1
+  framework:
+    type: esp-idf
+
+# To be able to get logs from the device via serial and api.
+logger:
+
+# API is a requirement of the dashboard import.
+api:
+
+# OTA is required for Over-the-Air updating
+ota:
+  - platform: esphome
+
+wifi:
+  # Set up a wifi access point using the device name above
+  ap:
+
+# In combination with the `ap` this allows the user
+# to provision wifi credentials to the device.
+captive_portal:
+
+globals:
+  # Meter reading in pulses, persisted across reboots
+  - id: gas_total_pulses
+    type: uint32_t
+    restore_value: true
+    initial_value: "0"
+  # Guards gas_total_pulses until it has been restored on boot
+  - id: gas_total_restored
+    type: bool
+    restore_value: false
+    initial_value: "false"
+  # Meter reading in pulses at the start of the current day/month/year and
+  # the period it belongs to (0 = not set yet, waiting for the first time sync)
+  - id: gas_day_base
+    type: uint32_t
+    restore_value: true
+    initial_value: "0"
+  - id: gas_day_key
+    type: uint32_t
+    restore_value: true
+    initial_value: "0"
+  - id: gas_month_base
+    type: uint32_t
+    restore_value: true
+    initial_value: "0"
+  - id: gas_month_key
+    type: uint32_t
+    restore_value: true
+    initial_value: "0"
+  - id: gas_year_base
+    type: uint32_t
+    restore_value: true
+    initial_value: "0"
+  - id: gas_year_key
+    type: uint32_t
+    restore_value: true
+    initial_value: "0"
+  # Consumption of the previous day in m³
+  - id: gas_yesterday
+    type: float
+    restore_value: true
+    initial_value: "NAN"
+
+time:
+  - platform: sntp
+    id: sntp_time
+    timezone: ${timezone}
+    on_time_sync:
+      - script.execute: gas_period_rollover
+
+interval:
+  - interval: 60s
+    then:
+      - script.execute: gas_period_rollover
+
+script:
+  # Starts a new day/month/year once the local date has changed
+  - id: gas_period_rollover
+    then:
+      - lambda: |-
+          if (!id(gas_total_restored)) return;
+          auto now = id(sntp_time).now();
+          if (!now.is_valid()) return;
+          const uint32_t pulses = id(gas_total_pulses);
+
+          const uint32_t day = now.year * 1000 + now.day_of_year;
+          if (id(gas_day_key) != day) {
+            const uint32_t last = id(gas_day_key);
+            const bool consecutive = last + 1 == day ||
+                (now.day_of_year == 1 && last / 1000 + 1 == now.year && last % 1000 >= 365);
+            // Unknown if the device was off for a whole day
+            id(gas_yesterday) = consecutive ? (pulses - id(gas_day_base)) * ${pulse_volume} : NAN;
+            id(gas_day_base) = pulses;
+            id(gas_day_key) = day;
+          }
+
+          const uint32_t month = now.year * 100 + now.month;
+          if (id(gas_month_key) != month) {
+            id(gas_month_base) = pulses;
+            id(gas_month_key) = month;
+          }
+
+          if (id(gas_year_key) != now.year) {
+            id(gas_year_base) = pulses;
+            id(gas_year_key) = now.year;
+          }
+
+sensor:
+  # Reed contact on GPIO4 against GND
+  - platform: pulse_meter
+    id: gas_pulse_meter
+    name: ${name_gas_flow}
+    pin:
+      number: GPIO4
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+      allow_other_uses: true
+    internal_filter: 100ms
+    internal_filter_mode: PULSE
+    timeout: 10min
+    unit_of_measurement: "m³/h"
+    device_class: volume_flow_rate
+    state_class: measurement
+    accuracy_decimals: 3
+    icon: mdi:meter-gas
+    filters:
+      # pulses/min -> m³/h
+      - lambda: return x * ${pulse_volume} * 60.0f;
+    total:
+      id: gas_meter_reading
+      name: ${name_gas_meter_reading}
+      unit_of_measurement: "m³"
+      device_class: gas
+      state_class: total_increasing
+      accuracy_decimals: 2
+      icon: mdi:meter-gas
+      filters:
+        - multiply: ${pulse_volume}
+      on_raw_value:
+        - lambda: |-
+            if (id(gas_total_restored)) {
+              id(gas_total_pulses) = (uint32_t) x;
+            }
+
+  - platform: template
+    id: gas_today
+    name: ${name_gas_today}
+    unit_of_measurement: "m³"
+    device_class: gas
+    state_class: total_increasing
+    accuracy_decimals: 2
+    icon: mdi:calendar-today
+    update_interval: 60s
+    lambda: |-
+      if (id(gas_day_key) == 0) return NAN;
+      return (uint32_t) (id(gas_total_pulses) - id(gas_day_base)) * ${pulse_volume};
+
+  - platform: template
+    id: gas_yesterday_sensor
+    name: ${name_gas_yesterday}
+    unit_of_measurement: "m³"
+    device_class: gas
+    accuracy_decimals: 2
+    icon: mdi:calendar-arrow-left
+    update_interval: 60s
+    lambda: return id(gas_yesterday);
+
+  - platform: template
+    id: gas_this_month
+    name: ${name_gas_this_month}
+    unit_of_measurement: "m³"
+    device_class: gas
+    state_class: total_increasing
+    accuracy_decimals: 2
+    icon: mdi:calendar-month
+    update_interval: 60s
+    lambda: |-
+      if (id(gas_month_key) == 0) return NAN;
+      return (uint32_t) (id(gas_total_pulses) - id(gas_month_base)) * ${pulse_volume};
+
+  - platform: template
+    id: gas_this_year
+    name: ${name_gas_this_year}
+    unit_of_measurement: "m³"
+    device_class: gas
+    state_class: total_increasing
+    accuracy_decimals: 2
+    icon: mdi:calendar-blank
+    update_interval: 60s
+    lambda: |-
+      if (id(gas_year_key) == 0) return NAN;
+      return (uint32_t) (id(gas_total_pulses) - id(gas_year_base)) * ${pulse_volume};
+
+  - platform: wifi_signal
+    id: wifi_signal_db
+    name: ${name_wifi_signal}
+    update_interval: 60s
+    entity_category: diagnostic
+
+  - platform: uptime
+    id: uptime_sensor
+    name: ${name_uptime}
+    entity_category: diagnostic
+
+binary_sensor:
+  # Live state of the reed contact, handy for aligning the sensor on the meter
+  - platform: gpio
+    id: reed_contact
+    name: ${name_reed_contact}
+    pin:
+      number: GPIO4
+      mode:
+        input: true
+        pullup: true
+      inverted: true
+      allow_other_uses: true
+    # The pulse_meter already owns the pin interrupt
+    use_interrupt: false
+    entity_category: diagnostic
+    filters:
+      - delayed_on_off: 50ms
+
+number:
+  # Set the current reading shown on the gas meter
+  - platform: template
+    id: gas_meter_reading_set
+    name: ${name_set_meter_reading}
+    icon: mdi:counter
+    entity_category: config
+    unit_of_measurement: "m³"
+    mode: box
+    min_value: 0
+    max_value: 99999.99
+    step: 0.01
+    update_interval: 60s
+    lambda: return id(gas_total_pulses) * ${pulse_volume};
+    set_action:
+      - lambda: |-
+          const uint32_t target = (uint32_t) std::llround(x / ${pulse_volume});
+          // Shift the period start values too, so setting the reading
+          // does not count as consumption
+          const uint32_t delta = target - id(gas_total_pulses);
+          id(gas_day_base) += delta;
+          id(gas_month_base) += delta;
+          id(gas_year_base) += delta;
+          id(gas_pulse_meter).set_total_pulses(target);
+
+light:
+  # Onboard WS2812 RGB LED of the Waveshare ESP32-C3-Zero
+  - platform: esp32_rmt_led_strip
+    id: onboard_led
+    name: ${name_led}
+    pin: GPIO10
+    num_leds: 1
+    chipset: WS2812
+    channel_colors: RGB
+    entity_category: config
+
+button:
+  - platform: restart
+    id: restart_button
+    name: ${name_restart}
+    entity_category: config
