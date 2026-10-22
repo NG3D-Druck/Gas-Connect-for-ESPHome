@@ -45,6 +45,10 @@ You can use the button below to install the pre-built firmware directly to your 
    *Settings → Devices & services*. Set **Pulse volume** if needed, then **Set meter reading**
    to the current value of your meter.
 
+**Was the device added to Home Assistant before?** Then delete the old entry under
+*Settings → Devices & services → ESPHome* and restart Home Assistant. Otherwise Home Assistant asks for an encryption
+key when adding it.
+
 </div>
 
 <div data-lang="de" markdown="1">
@@ -75,6 +79,10 @@ Mit dem Button unten kannst du die fertige Firmware direkt aus dem Browser per U
    `gas-connect-xxxxxx` verbinden und `http://192.168.4.1` öffnen.
 5. **In Home Assistant hinzufügen:** Das Gerät wird unter *Einstellungen → Geräte & Dienste* automatisch gefunden.
    Bei Bedarf **Pulse volume** anpassen und dann bei **Set meter reading** den aktuellen Zählerstand eintragen.
+
+**War das Gerät schon einmal in Home Assistant eingebunden?** Dann den alten Eintrag unter
+*Einstellungen → Geräte & Dienste → ESPHome* löschen und Home Assistant neu starten. Sonst fragt Home Assistant beim
+Hinzufügen nach einem Verschlüsselungsschlüssel.
 
 </div>
 

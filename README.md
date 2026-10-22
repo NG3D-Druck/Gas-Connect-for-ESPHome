@@ -54,6 +54,10 @@ Jede Umdrehung der letzten Rollenziffer erzeugt einen Impuls. Wie viel Gas das i
    und bei **Set meter reading** den aktuellen Stand des Zählers eintragen.
    Falls dein Zähler nicht 0,01 m³ pro Umdrehung hat, vorher **Pulse volume** anpassen.
 
+**War das Gerät schon einmal in Home Assistant eingebunden?** Dann den alten Eintrag unter
+*Einstellungen → Geräte & Dienste → ESPHome* löschen und Home Assistant neu starten. Sonst fragt Home Assistant beim
+Hinzufügen nach einem Verschlüsselungsschlüssel.
+
 Die Zeiträume wechseln um Mitternacht Ortszeit. Die Zeitzone übernimmt das Gerät automatisch aus den Einstellungen von
 Home Assistant (ab Version 2026.3). Bis Home Assistant verbunden ist, oder bei älteren Versionen, gilt `Europe/Berlin`
 (Substitution `timezone`).
@@ -114,6 +118,10 @@ Each revolution of the last drum digit creates one pulse. How much gas that is i
 3. Adopt it in Home Assistant (it shows up as `gas-connect-xxxxxx`, the suffix being the end of its MAC address)
    and set **Set meter reading** to the current value of your meter.
    If your meter does not count 0.01 m³ per revolution, set **Pulse volume** first.
+
+**Was the device added to Home Assistant before?** Then delete the old entry under
+*Settings → Devices & services → ESPHome* and restart Home Assistant. Otherwise Home Assistant asks for an encryption
+key when adding it.
 
 The periods roll over at local midnight. The device takes the timezone from the Home Assistant settings automatically
 (Home Assistant 2026.3 and newer). Until Home Assistant is connected, or with older versions, `Europe/Berlin` applies
