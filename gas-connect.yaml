@@ -285,10 +285,15 @@ sensor:
     update_interval: 60s
     entity_category: diagnostic
 
+text_sensor:
+  # Uptime as e.g. "2d 3h 15m"; updated every minute, so without seconds
   - platform: uptime
     id: uptime_sensor
     name: Uptime
     entity_category: diagnostic
+    update_interval: 60s
+    format:
+      separator: " "
 
 binary_sensor:
   # Live state of the reed contact, handy for aligning the sensor on the meter
