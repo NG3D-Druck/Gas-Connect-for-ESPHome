@@ -51,6 +51,9 @@ Jede Umdrehung der letzten Rollenziffer erzeugt einen Impuls. Wie viel Gas das i
    und bei **Set meter reading** den aktuellen Stand des Zählers eintragen.
    Falls dein Zähler nicht 0,01 m³ pro Umdrehung hat, vorher **Pulse volume** anpassen.
 
+**Einrichtung innerhalb von 15 Minuten:** Nach dem Einstecken ist das Gerät 15 Minuten lang einrichtbar. Danach
+schließen sich Hotspot und Bluetooth-Einrichtung. Dann das Gerät kurz ab- und wieder anstecken.
+
 **Verschlüsselung:** Die Verbindung zu Home Assistant ist verschlüsselt. Home Assistant richtet beim Hinzufügen
 automatisch einen eigenen Schlüssel für das Gerät ein, du musst nichts eingeben. Danach nimmt das Gerät nur noch
 verschlüsselte Verbindungen an. Wird das Gerät beim Neuinstallieren über den Web-Installer gelöscht, ist auch der
@@ -117,6 +120,9 @@ Each revolution of the last drum digit creates one pulse. How much gas that is i
 3. Adopt it in Home Assistant (it shows up as `gas-connect-xxxxxx`, the suffix being the end of its MAC address)
    and set **Set meter reading** to the current value of your meter.
    If your meter does not count 0.01 m³ per revolution, set **Pulse volume** first.
+
+**Set up within 15 minutes:** After plugging it in, the device can be set up for 15 minutes. Then the hotspot and
+the Bluetooth setup close. Unplug the device briefly and plug it back in to set it up.
 
 **Encryption:** The connection to Home Assistant is encrypted. Home Assistant sets up a key of its own for the device
 when adding it, so there is nothing to enter. From then on the device only accepts encrypted connections. If the device

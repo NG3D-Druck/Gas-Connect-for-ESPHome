@@ -42,6 +42,9 @@ You can use the button below to install the pre-built firmware directly to your 
    *Settings → Devices & services*. Set **Pulse volume** if needed, then **Set meter reading**
    to the current value of your meter.
 
+**Set up within 15 minutes:** After plugging it in, the device can be set up for 15 minutes. Then the hotspot and
+the Bluetooth setup close. Unplug the device briefly and plug it back in to set it up.
+
 **Encryption:** The connection to Home Assistant is encrypted. Home Assistant sets up a key of its own for the device
 when adding it, so there is nothing to enter. From then on the device only accepts encrypted connections. If the device
 is erased while reinstalling it with the web installer, the key is gone too: remove the device from Home Assistant and
@@ -78,6 +81,9 @@ Mit dem Button unten kannst du die fertige Firmware direkt aus dem Browser per U
    `gas-connect-xxxxxx` verbinden und `http://192.168.4.1` öffnen.
 5. **In Home Assistant hinzufügen:** Das Gerät wird unter *Einstellungen → Geräte & Dienste* automatisch gefunden.
    Bei Bedarf **Pulse volume** anpassen und dann bei **Set meter reading** den aktuellen Zählerstand eintragen.
+
+**Einrichtung innerhalb von 15 Minuten:** Nach dem Einstecken ist das Gerät 15 Minuten lang einrichtbar. Danach
+schließen sich Hotspot und Bluetooth-Einrichtung. Dann das Gerät kurz ab- und wieder anstecken.
 
 **Verschlüsselung:** Die Verbindung zu Home Assistant ist verschlüsselt. Home Assistant richtet beim Hinzufügen
 automatisch einen eigenen Schlüssel für das Gerät ein, du musst nichts eingeben. Danach nimmt das Gerät nur noch

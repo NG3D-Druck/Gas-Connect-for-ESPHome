@@ -38,6 +38,12 @@ api:
 ota:
   - platform: esphome
 
+# An unprovisioned device can only be set up for this long after power-on;
+# then the fallback hotspot, captive portal and Improv close until the next
+# power cycle (EN 18031)
+provisioning:
+  timeout: 15min
+
 wifi:
   # Set up a wifi access point using the device name above
   ap:
