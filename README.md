@@ -51,6 +51,11 @@ Jede Umdrehung der letzten Rollenziffer erzeugt einen Impuls. Wie viel Gas das i
    und bei **Set meter reading** den aktuellen Stand des Zählers eintragen.
    Falls dein Zähler nicht 0,01 m³ pro Umdrehung hat, vorher **Pulse volume** anpassen.
 
+**Verschlüsselung:** Die Verbindung zu Home Assistant ist verschlüsselt. Home Assistant richtet beim Hinzufügen
+automatisch einen eigenen Schlüssel für das Gerät ein, du musst nichts eingeben. Danach nimmt das Gerät nur noch
+verschlüsselte Verbindungen an. Wird das Gerät beim Neuinstallieren über den Web-Installer gelöscht, ist auch der
+Schlüssel weg: Dann das Gerät in Home Assistant entfernen und neu hinzufügen.
+
 **War das Gerät schon einmal in Home Assistant eingebunden?** Dann den alten Eintrag unter
 *Einstellungen → Geräte & Dienste → ESPHome* löschen und Home Assistant neu starten. Sonst fragt Home Assistant beim
 Hinzufügen nach einem Verschlüsselungsschlüssel.
@@ -112,6 +117,11 @@ Each revolution of the last drum digit creates one pulse. How much gas that is i
 3. Adopt it in Home Assistant (it shows up as `gas-connect-xxxxxx`, the suffix being the end of its MAC address)
    and set **Set meter reading** to the current value of your meter.
    If your meter does not count 0.01 m³ per revolution, set **Pulse volume** first.
+
+**Encryption:** The connection to Home Assistant is encrypted. Home Assistant sets up a key of its own for the device
+when adding it, so there is nothing to enter. From then on the device only accepts encrypted connections. If the device
+is erased while reinstalling it with the web installer, the key is gone too: remove the device from Home Assistant and
+add it again.
 
 **Was the device added to Home Assistant before?** Then delete the old entry under
 *Settings → Devices & services → ESPHome* and restart Home Assistant. Otherwise Home Assistant asks for an encryption

@@ -30,6 +30,9 @@ logger:
 
 # API is a requirement of the dashboard import.
 api:
+  # Encrypted without a key in the config: Home Assistant provisions a key
+  # per device on the first connection; plaintext is refused from then on
+  encryption:
 
 # OTA is required for Over-the-Air updating
 ota:
