@@ -1,0 +1,83 @@
+name: ESPHome update check
+
+# Once a month: compare the ESPHome version pinned in build.yml with the
+# latest ESPHome release and list security advisories published since the
+# pinned release. Opens one issue per new version (GitHub then emails the
+# repo owner); never touches the build itself.
+
+on:
+  schedule:
+    - cron: "0 6 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    name: Check for ESPHome updates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+
+      - name: Compare versions and open an issue
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          pinned=$(sed -n 's/^ *esphome-version: *\([0-9.]*\).*/\1/p' .github/workflows/build.yml)
+          latest=$(gh api repos/esphome/esphome/releases/latest --jq .tag_name)
+          since=$(gh api "repos/esphome/esphome/releases/tags/${pinned}" --jq .published_at)
+          echo "Pinned ${pinned} (${since}), latest ${latest}"
+
+          advisories=$(gh api "repos/esphome/esphome/security-advisories?state=published&per_page=100" \
+            --jq "[.[] | select(.published_at > \"${since}\")]
+                  | map(\"- **\(.severity)**: [\(.summary)](\(.html_url)) (\(.published_at[:10]))\") | join(\"\n\")")
+
+          if [[ "${pinned}" == "${latest}" && -z "${advisories}" ]]; then
+            echo "Up to date, nothing to do."
+            exit 0
+          fi
+
+          title="ESPHome-Update: ${pinned} → ${latest}"
+          if [[ -n "${advisories}" ]]; then
+            title="${title} (Sicherheitsmeldung)"
+          fi
+          if gh issue list --state all --label esphome-update --limit 200 --json title --jq '.[].title' \
+            | grep -qF "ESPHome-Update: ${pinned} → ${latest}"; then
+            echo "Issue for ${latest} already exists."
+            exit 0
+          fi
+
+          {
+            echo "Die Firmware wird mit ESPHome **${pinned}** gebaut, aktuell ist **${latest}**."
+            echo
+            if [[ -n "${advisories}" ]]; then
+              echo "### Sicherheitsmeldungen seit ${pinned}"
+              echo
+              echo "${advisories}"
+              echo
+              echo "Bitte prüfen, ob die Firmware betroffen ist (z. B. captive_portal, api, web_server), und zeitnah aktualisieren."
+            else
+              echo "Keine Sicherheitsmeldungen seit ${pinned}. Ein Update ist optional."
+            fi
+            echo
+            echo "### Release Notes"
+            echo
+            echo "https://github.com/esphome/esphome/releases/tag/${latest}"
+            echo
+            echo "### So aktualisieren"
+            echo
+            echo "1. \`esphome-version\` in \`.github/workflows/build.yml\` auf \`${latest}\` setzen und pushen"
+            echo "2. Den Entwurf auf ein eigenes Gerät flashen und testen"
+            echo "3. Workflow **Release** starten"
+          } > body.md
+
+          if [[ "${DRY_RUN:-}" == "1" ]]; then
+            echo "DRY RUN: ${title}"; cat body.md; exit 0
+          fi
+          gh label create esphome-update --color 0d2b7b --description "Neue ESPHome-Version oder Sicherheitsmeldung" 2>/dev/null || true
+          gh issue create --title "${title}" --label esphome-update --body-file body.md
